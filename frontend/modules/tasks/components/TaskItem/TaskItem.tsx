@@ -3,6 +3,7 @@
 import { Task } from '@modules/tasks/types';
 import { formatDate } from '@shared/utils/date';
 import { Button } from '@shared/components/Button';
+import clsx from 'clsx';
 
 interface TaskItemProps {
   task: Task;
@@ -28,11 +29,13 @@ export const TaskItem = ({
 
   return (
     <li
-      className={`p-4 bg-white rounded-lg shadow-sm border-l-4 ${
-        task.status === 'concluida'
-          ? 'border-green-500 opacity-75'
-          : 'border-blue-500'
-      }`}
+      className={clsx(
+        'p-4 bg-white rounded-lg shadow-sm border-l-4',
+        {
+          'border-green-500 opacity-75': task.status === 'concluida',
+          'border-blue-500': task.status === 'pendente',
+        }
+      )}
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
@@ -45,11 +48,10 @@ export const TaskItem = ({
               aria-label={`Marcar tarefa como ${task.status === 'pendente' ? 'concluída' : 'pendente'}`}
             />
             <p
-              className={`flex-1 ${
-                task.status === 'concluida'
-                  ? 'line-through text-gray-500'
-                  : 'text-gray-900'
-              }`}
+              className={clsx('flex-1', {
+                'line-through text-gray-500': task.status === 'concluida',
+                'text-gray-900': task.status === 'pendente',
+              })}
             >
               {task.descricao}
             </p>
