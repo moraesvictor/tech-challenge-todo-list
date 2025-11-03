@@ -4,6 +4,7 @@ import { useState, FormEvent } from 'react';
 import { validateTaskDescription } from '@shared/utils/validation';
 import { Input } from '@shared/components/Input';
 import { Button } from '@shared/components/Button';
+import { useToastMethods } from '@shared/components/Toast';
 
 interface TaskFormProps {
   onSubmit: (descricao: string) => Promise<void>;
@@ -14,6 +15,7 @@ export const TaskForm = ({ onSubmit, isLoading }: TaskFormProps) => {
   const [descricao, setDescricao] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const toast = useToastMethods();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,6 +23,7 @@ export const TaskForm = ({ onSubmit, isLoading }: TaskFormProps) => {
     const validationError = validateTaskDescription(descricao);
     if (validationError) {
       setError(validationError);
+      toast.error(validationError);
       return;
     }
 
@@ -30,9 +33,10 @@ export const TaskForm = ({ onSubmit, isLoading }: TaskFormProps) => {
       await onSubmit(descricao.trim());
       setDescricao('');
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Erro ao criar tarefa'
-      );
+      const errorMessage =
+        err instanceof Error ? err.message : 'Erro ao criar tarefa';
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
