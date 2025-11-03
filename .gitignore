@@ -1,0 +1,11 @@
+# Arquivos .gitignore específicos estão em backend/.gitignore e frontend/.gitignore
+
+# Arquivos gerais do projeto
+*.tmp
+*.temp
+.DS_Store
+Thumbs.db
+
+# IDE (configurações globais se necessário)
+.vscode/
+.idea/
