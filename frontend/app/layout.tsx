@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ToastProvider } from "@shared/components/Toast";
 
 export const metadata: Metadata = {
   title: "Minhas Tarefas - Desafio Técnico",
@@ -14,19 +15,21 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className="antialiased bg-gray-50">
-        <main className="min-h-screen py-8 px-4">
-          <div className="max-w-4xl mx-auto ">
-            <header className="mb-8">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                Minhas Tarefas
-              </h1>
-              <p className="text-gray-600">
-                Organize suas tarefas de forma simples e eficiente
-              </p>
-            </header>
-            {children}
-          </div>
-        </main>
+        <ToastProvider>
+          <main className="min-h-screen py-8 px-4">
+            <div className="max-w-4xl mx-auto ">
+              <header className="mb-8">
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  Minhas Tarefas
+                </h1>
+                <p className="text-gray-600">
+                  Organize suas tarefas de forma simples e eficiente
+                </p>
+              </header>
+              {children}
+            </div>
+          </main>
+        </ToastProvider>
       </body>
     </html>
   );

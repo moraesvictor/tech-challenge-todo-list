@@ -2,14 +2,13 @@
 
 import { TaskForm, TaskList, TaskFilters } from '../';
 import { useTasks } from '@modules/tasks/hooks/useTasks';
-import { ErrorMessage, Loading } from '@shared/components';
+import { Loading } from '@shared/components';
 
 export const TaskContainer = () => {
   const {
     filteredTasks,
     filter,
     isLoading,
-    error,
     setFilter,
     createTask,
     updateTaskStatus,
@@ -24,12 +23,6 @@ export const TaskContainer = () => {
         </h2>
         <TaskForm onSubmit={createTask} isLoading={isLoading} />
       </section>
-
-      {error && (
-        <div className="mb-6">
-          <ErrorMessage message={error} />
-        </div>
-      )}
 
       <section className="bg-white rounded-lg shadow-md p-6">
         <div className="flex items-center justify-between mb-4">

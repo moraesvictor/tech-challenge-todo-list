@@ -3,13 +3,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Task, TaskFilter } from '@modules/tasks/types';
 import { taskService } from '@modules/tasks/services/taskService';
+import { useToastMethods } from '@shared/components/Toast';
 
 interface UseTasksReturn {
   tasks: Task[];
   filteredTasks: Task[];
   filter: TaskFilter;
   isLoading: boolean;
-  error: string | null;
   setFilter: (filter: TaskFilter) => void;
   refreshTasks: () => Promise<void>;
   createTask: (descricao: string) => Promise<void>;
@@ -21,22 +21,21 @@ export const useTasks = (): UseTasksReturn => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [filter, setFilter] = useState<TaskFilter>('todas');
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const toast = useToastMethods();
 
   const fetchTasks = useCallback(async () => {
     try {
       setIsLoading(true);
-      setError(null);
       const data = await taskService.getAllTasks();
       setTasks(data);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Erro ao carregar tarefas'
-      );
+      const errorMessage =
+        err instanceof Error ? err.message : 'Erro ao carregar tarefas';
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [toast]);
 
   useEffect(() => {
     fetchTasks();
@@ -48,46 +47,54 @@ export const useTasks = (): UseTasksReturn => {
     return true;
   });
 
-  const createTask = useCallback(async (descricao: string) => {
-    try {
-      setError(null);
-      await taskService.createTask({ descricao });
-      await fetchTasks();
-    } catch (err) {
-      throw err instanceof Error
-        ? err
-        : new Error('Erro ao criar tarefa');
-    }
-  }, [fetchTasks]);
+  const createTask = useCallback(
+    async (descricao: string) => {
+      try {
+        await taskService.createTask({ descricao });
+        await fetchTasks();
+        toast.success('Tarefa criada com sucesso!');
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Erro ao criar tarefa';
+        toast.error(errorMessage);
+        throw err;
+      }
+    },
+    [fetchTasks, toast]
+  );
 
   const updateTaskStatus = useCallback(
     async (id: string, status: Task['status']) => {
       try {
-        setError(null);
         await taskService.updateTaskStatus(id, { status });
         await fetchTasks();
+        toast.success(
+          `Tarefa marcada como ${status === 'concluida' ? 'concluída' : 'pendente'}!`
+        );
       } catch (err) {
-        throw err instanceof Error
-          ? err
-          : new Error('Erro ao atualizar tarefa');
+        const errorMessage =
+          err instanceof Error ? err.message : 'Erro ao atualizar tarefa';
+        toast.error(errorMessage);
+        throw err;
       }
     },
-    [fetchTasks]
+    [fetchTasks, toast]
   );
 
   const deleteTask = useCallback(
     async (id: string) => {
       try {
-        setError(null);
         await taskService.deleteTask(id);
         await fetchTasks();
+        toast.success('Tarefa excluída com sucesso!');
       } catch (err) {
-        throw err instanceof Error
-          ? err
-          : new Error('Erro ao deletar tarefa');
+        const errorMessage =
+          err instanceof Error ? err.message : 'Erro ao deletar tarefa';
+        toast.error(errorMessage);
+        throw err;
       }
     },
-    [fetchTasks]
+    [fetchTasks, toast]
   );
 
   return {
@@ -95,7 +102,6 @@ export const useTasks = (): UseTasksReturn => {
     filteredTasks,
     filter,
     isLoading,
-    error,
     setFilter,
     refreshTasks: fetchTasks,
     createTask,
