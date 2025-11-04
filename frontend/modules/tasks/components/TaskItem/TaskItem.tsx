@@ -3,6 +3,7 @@
 import { Task } from '@modules/tasks/types';
 import { formatDate } from '@shared/utils/date';
 import { Button } from '@shared/components/Button';
+import { useModal } from '@shared/components/Modal';
 import clsx from 'clsx';
 
 interface TaskItemProps {
@@ -16,15 +17,38 @@ export const TaskItem = ({
   onToggleStatus,
   onDelete,
 }: TaskItemProps) => {
+  const modal = useModal();
+
   const handleToggleStatus = () => {
     const newStatus = task.status === 'pendente' ? 'concluida' : 'pendente';
     onToggleStatus(task.id, newStatus);
   };
 
   const handleDelete = () => {
-    if (window.confirm('Tem certeza que deseja excluir esta tarefa?')) {
-      onDelete(task.id);
-    }
+    modal.open({
+      title: 'Confirmar exclusão',
+      content: (
+        <div className="space-y-4">
+          <p className="text-gray-700">
+            Tem certeza que deseja excluir esta tarefa?
+          </p>
+          <div className="flex gap-3 justify-end">
+            <Button variant="secondary" onClick={modal.close}>
+              Cancelar
+            </Button>
+            <Button
+              variant="danger"
+              onClick={() => {
+                onDelete(task.id);
+                modal.close();
+              }}
+            >
+              Excluir
+            </Button>
+          </div>
+        </div>
+      ),
+    });
   };
 
   return (
