@@ -173,13 +173,99 @@ npm start
 11. **Componentes Reutilizáveis**: Button e Input compartilhados para consistência visual
 12. **TaskContainer**: Abstração da lógica do módulo tasks para componente container
 
+## 🎯 Decisões Técnicas do Frontend
+
+### Testes Unitários
+
+**Stack de Testes:**
+- **Jest 29.7.0** - Framework de testes principal
+- **React Testing Library 14.1.2** - Biblioteca para testes de componentes React
+- **@testing-library/user-event 14.5.1** - Simulação de interações do usuário
+- **@testing-library/jest-dom 6.1.5** - Matchers customizados para DOM
+- **ts-jest 29.1.1** - Suporte TypeScript para Jest
+- **MSW 2.0.0** - Preparado para mocks de API quando necessário
+
+**Decisões de Implementação:**
+
+1. **Custom Render Functions**: Criamos funções `render` e `renderHook` customizadas que envolvem automaticamente os componentes com `ModalProvider` e `ToastProvider`, garantindo que todos os testes tenham acesso aos contextos necessários sem repetição de código.
+
+2. **Factories de Dados**: Implementamos factories (`taskFactory.ts`) para criar dados de teste consistentes e reutilizáveis, seguindo o padrão Factory Pattern para facilitar a manutenção e evolução dos testes.
+
+3. **Uso de `act()`**: Envolvemos todas as atualizações assíncronas de estado com `act()` para evitar warnings do React e garantir que os testes reflitam o comportamento real da aplicação.
+
+4. **Queries Acessíveis**: Priorizamos queries acessíveis (`getByRole`, `getByLabelText`, `getByPlaceholderText`) em vez de queries por texto ou classe CSS, promovendo testes que também verificam acessibilidade.
+
+5. **Estrutura de Testes**: Seguimos o padrão `describe/it` com `beforeEach` para limpeza de mocks, garantindo isolamento entre testes.
+
+6. **Path Aliases**: Configuramos aliases `@test-utils` para facilitar imports e manter a estrutura de testes organizada.
+
+**Cobertura:**
+- 12 arquivos de teste cobrindo componentes, hooks e utilitários
+- 81 testes passando
+- Cobertura de renderização, interações, estados e acessibilidade
+
+Para mais detalhes sobre a implementação dos testes, veja a [PR #4](https://github.com/moraesvictor/tech-challenge-todo-list/pull/4).
+
+### Sistema de Toast
+
+**Decisão**: Implementamos um sistema de toast usando React Context API em vez de bibliotecas externas como `react-toastify` ou `react-hot-toast` porque:
+
+1. **Controle total**: Podemos customizar completamente o comportamento e estilização
+2. **Sem dependências extras**: Reduz o tamanho do bundle
+3. **Integração natural**: Se integra perfeitamente com a arquitetura modular existente
+4. **Aprendizado**: Demonstra conhecimento de Context API e gerenciamento de estado global
+
+### Componentização
+
+**Decisão**: Estrutura `NomeDaPasta/NomeDaPasta.tsx + index.ts` em vez de `NomeDaPasta.tsx` direto porque:
+
+1. **Organização**: Facilita a adição de sub-componentes e arquivos relacionados
+2. **Escalabilidade**: Permite evoluir o componente sem refatorar imports
+3. **Legibilidade**: Torna explícito qual componente está sendo importado
+4. **Padrão comum**: Alinha com práticas modernas de organização de componentes React
+
+### TaskContainer
+
+**Decisão**: Criamos um componente `TaskContainer` que abstrai toda a lógica do módulo de tarefas porque:
+
+1. **Separação de responsabilidades**: A página (`app/page.tsx`) fica limpa e focada apenas em composição
+2. **Reutilização**: O container pode ser usado em diferentes contextos se necessário
+3. **Testabilidade**: Facilita testes isolados da lógica do módulo
+4. **Manutenibilidade**: Centraliza toda a lógica relacionada a tarefas em um único lugar
+
+### clsx para Classes CSS
+
+**Decisão**: Usamos `clsx` em vez de template literals para classes condicionais porque:
+
+1. **Legibilidade**: Código mais limpo e fácil de entender
+2. **Manutenibilidade**: Facilita adicionar/remover classes condicionais
+3. **Performance**: Biblioteca otimizada para gerenciar classes
+4. **Padrão**: Amplamente adotado na comunidade React
+
 ## 🧪 Testes
 
-Para executar os testes (quando implementados):
+A aplicação possui uma suíte completa de testes unitários implementada. Para executar:
 
 ```bash
+# Executar todos os testes
 npm test
+
+# Modo watch (desenvolvimento)
+npm run test:watch
+
+# Com cobertura de código
+npm run test:coverage
 ```
+
+### Estrutura de Testes
+
+Os testes seguem os padrões estabelecidos:
+- **Custom Render Functions**: Componentes são renderizados com providers necessários automaticamente
+- **Factories**: Dados de teste criados através de factories para consistência
+- **Isolamento**: Cada teste é independente com limpeza de mocks entre execuções
+- **Acessibilidade**: Testes verificam acessibilidade através de queries semânticas
+
+Para mais detalhes sobre a implementação dos testes, veja a [PR #4](https://github.com/moraesvictor/tech-challenge-todo-list/pull/4).
 
 ## 📚 Estrutura de Imports
 

@@ -80,10 +80,21 @@ Veja [frontend/README.md](./frontend/README.md) para mais detalhes.
 
 ## 🧪 Testes
 
+### Backend
+
 ```bash
 cd backend
 npm test
 ```
+
+### Frontend
+
+```bash
+cd frontend
+npm test
+```
+
+Para mais detalhes sobre a implementação dos testes no frontend, veja a [PR #4 - Implementação de testes unitários no frontend](https://github.com/moraesvictor/tech-challenge-todo-list/pull/4).
 
 ## 📝 Decisões de Arquitetura
 
