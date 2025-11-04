@@ -7,7 +7,7 @@ Aplicação Full Stack desenvolvida para gerenciamento de tarefas, com backend e
 ```
 desafio-tecnico-node-react/
 ├── backend/          # API RESTful (Node.js + Express + TypeScript)
-├── frontend/         # Interface React (em desenvolvimento)
+├── frontend/         # Interface React 
 └── README.md         # Este arquivo
 ```
 
